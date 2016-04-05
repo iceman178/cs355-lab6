@@ -6,6 +6,7 @@ import java.awt.Polygon;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import cs355.GUIFunctions;
 import cs355.controller.Controller;
 import cs355.controller.IControllerState;
 import cs355.model.drawing.*;
+import cs355.model.image.Image;
 import cs355.model.scene.HouseModel;
 import cs355.model.scene.Instance;
 import cs355.model.scene.Line3D;
@@ -32,6 +34,22 @@ public class View implements ViewRefresher
 		GUIFunctions.refresh();
 	}
 
+	
+	public void renderImage(Graphics2D g2d)
+	{
+		Image image = Controller.instance().getImage();
+		
+		if (image == null) {
+			return;
+		}
+		
+		g2d.setTransform(Controller.instance().worldToView());
+		
+		BufferedImage b = image.getImage();
+		
+		g2d.drawImage(b, null, 1024-(b.getWidth()/2), 1024-(b.getHeight()/2));
+	}
+	
 	public void render3DModel(Graphics2D g2d) 
 	{
 		ArrayList<Instance> instCollection = SceneModel.instance().instances();
@@ -60,6 +78,11 @@ public class View implements ViewRefresher
 	@Override
 	public void refreshView(Graphics2D g2d) 
 	{
+		if (Controller.instance().getDisplayImage())
+		{
+			this.renderImage(g2d);
+		}
+		
 		ArrayList<Shape> shapes = (ArrayList<Shape>) Model.instance().getShapes();
 		
 		int curShapeIndex = Model.instance().getCurShapeIndex();

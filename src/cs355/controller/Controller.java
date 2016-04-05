@@ -13,6 +13,7 @@ import com.sun.glass.events.KeyEvent;
 import cs355.GUIFunctions;
 import cs355.controller.IControllerState.stateType;
 import cs355.model.drawing.*;
+import cs355.model.image.Image;
 import cs355.model.scene.Instance;
 import cs355.model.scene.Point3D;
 import cs355.model.scene.SceneModel;
@@ -21,7 +22,7 @@ import javafx.scene.Scene;
 
 public class Controller implements CS355Controller 
 {
-
+	
 	private static Controller _instance;
 	
 	public static final double ZOOMIN  = 2.0;
@@ -38,6 +39,8 @@ public class Controller implements CS355Controller
 	private Point2D.Double viewCenter;
 	private IControllerState state;
 	private boolean mode3D;
+	public boolean displayImage;
+	public Image image;
 	
 	private Point3D cameraHome;
 	private double rotationHome;
@@ -52,6 +55,7 @@ public class Controller implements CS355Controller
 
 	private Controller() 
 	{
+		displayImage = false;
 		mode3D = false;
 		this.zoom = 1.0;
 		this.scrollerSize = 512;
@@ -173,6 +177,12 @@ public class Controller implements CS355Controller
 	{
 		this.setZoom(ZOOMOUT);
 	}
+	
+	public void zoomOutCompletely()
+	{
+		this.setZoom(ZOOMMIN);
+	}
+	
 
 	public void setZoom(Double zoomAdjustment)
 	{
@@ -412,11 +422,9 @@ public class Controller implements CS355Controller
 		if (mode3D) {
 			mode3D =! mode3D;
 			this.state = new ControllerNothingState();
-			//System.out.println("3D mode OFF " + mode3D);
 		}
 		else {
 			mode3D =! mode3D;
-			//System.out.println("3D mode ON " + mode3D);
 			this.state = new Controller3DState();
 		}
 		
@@ -590,45 +598,101 @@ public class Controller implements CS355Controller
 	}
 	
 	
-	// TODO LATER ON
-	@Override
-	public void mouseMoved(MouseEvent arg0) {}
+	//--------------------------------------------Image Manipulation-----------------------------TODO
 	
 	@Override
-	public void mouseEntered(MouseEvent arg0) {}
+	public void openImage(File file) 
+	{
+		this.image = new Image();
+		this.image.open(file);
+		GUIFunctions.refresh();
+	} 
+
+	@Override
+	public void saveImage(File file) 
+	{
+		
+	}
+
+	@Override
+	public void toggleBackgroundDisplay()
+	{
+		displayImage = !displayImage;
+//		System.out.println("DisplayImage=" + displayImage);
+		this.zoomOutCompletely();
+		GUIFunctions.refresh();
+	}
 	
 	@Override
-	public void mouseExited(MouseEvent arg0) {}
+	public void doEdgeDetection() 
+	{
+		if (this.image != null)
+		{
+			this.image.edgeDetection();
+			GUIFunctions.refresh();
+		}
+	}
+
+	@Override
+	public void doSharpen()
+	{
+		if (this.image != null)
+		{
+			this.image.sharpen();
+			GUIFunctions.refresh();
+		}
+	}
+
+	@Override
+	public void doMedianBlur()
+	{
+		if (this.image != null)
+		{
+			this.image.medianBlur();
+			GUIFunctions.refresh();
+		}
+	}
+
+	@Override
+	public void doUniformBlur() 
+	{
+		if (this.image != null)
+		{
+			this.image.uniformBlur();
+			GUIFunctions.refresh();
+		}
+	}
+
+	@Override
+	public void doGrayscale()
+	{
+		if (this.image != null)
+		{
+			this.image.grayscale();
+			GUIFunctions.refresh();
+		}
+	}
+
+	@Override
+	public void doChangeContrast(int contrastAmountNum) 
+	{
+		if (this.image != null)
+		{
+			this.image.contrast(contrastAmountNum);
+			GUIFunctions.refresh();
+		}
+	}
 	
 	@Override
-	public void openImage(File file) {} 
-
-	@Override
-	public void saveImage(File file) {}
-
-	@Override
-	public void toggleBackgroundDisplay() {}
+	public void doChangeBrightness(int brightnessAmountNum) 
+	{
+		if (this.image != null)
+		{
+			this.image.brightness(brightnessAmountNum);
+			GUIFunctions.refresh();
+		}
+	}
 	
-	@Override
-	public void doEdgeDetection() {}
-
-	@Override
-	public void doSharpen() {}
-
-	@Override
-	public void doMedianBlur() {}
-
-	@Override
-	public void doUniformBlur() {}
-
-	@Override
-	public void doGrayscale() {}
-
-	@Override
-	public void doChangeContrast(int contrastAmountNum) {}
-	
-	@Override
-	public void doChangeBrightness(int brightnessAmountNum) {}
 	
 	//------------------------GETTERS AND SETTERS---------------------------
 
@@ -648,6 +712,31 @@ public class Controller implements CS355Controller
 		return this.state.getType();
 	}
 	
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	public boolean getDisplayImage() {
+		return displayImage;
+	}
+
+	public void setDisplayImage(boolean displayImage) {
+		this.displayImage = displayImage;
+	}
+
+	// Don't worry about these
+	@Override
+	public void mouseMoved(MouseEvent arg0) {}
+	
+	@Override
+	public void mouseEntered(MouseEvent arg0) {}
+	
+	@Override
+	public void mouseExited(MouseEvent arg0) {}
 	
 }
 
