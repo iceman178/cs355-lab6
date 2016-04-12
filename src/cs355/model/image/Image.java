@@ -8,13 +8,13 @@ import java.util.Arrays;
 
 public class Image extends CS355Image 
 {
-	public BufferedImage bi;
+	public BufferedImage bufferedImage;
 	private int[][] updatedPixels;
 	
 	public Image()
 	{
 		super();
-		bi = null;
+		bufferedImage = null;
 		updatedPixels = null;
 	}
 	
@@ -43,14 +43,14 @@ public class Image extends CS355Image
 	@Override
 	public BufferedImage getImage() 
 	{
-		if (bi != null) {
-			return bi;
+		if (bufferedImage != null) {
+			return bufferedImage;
 		}
 		
 		int w = super.getWidth();
 		int h = super.getHeight();
-		bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-		WritableRaster wr = bi.getRaster();
+		bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		WritableRaster wr = bufferedImage.getRaster();
 		
 		int[] rgb = new int[3];
 		
@@ -62,9 +62,9 @@ public class Image extends CS355Image
 			}
 		}
 		
-		bi.setData(wr);
+		bufferedImage.setData(wr);
 
-		return bi;
+		return bufferedImage;
 	}
 
 	@Override
@@ -128,8 +128,7 @@ public class Image extends CS355Image
 		}
 		
 		updatePixels();
-		
-		bi = null; // Reset buffered image so it will redraw
+		bufferedImage = null;
 	}
 
 	@Override
@@ -177,8 +176,7 @@ public class Image extends CS355Image
 		}
 		
 		updatePixels();
-		
-		bi=null; //reset buffered image so it will redraw
+		bufferedImage = null;
 	}
 
 	@Override
@@ -241,9 +239,7 @@ public class Image extends CS355Image
 		}
 		
 		updatePixels();
-		
-		bi = null; // Reset buffered image so it will redraw
-		
+		bufferedImage = null;
 	}
 
 	@Override
@@ -302,9 +298,7 @@ public class Image extends CS355Image
 		}
 		
 		updatePixels();
-		
-		bi=null; //reset buffered image so it will redraw
-		
+		bufferedImage = null;
 	}
 
 	@Override
@@ -331,84 +325,79 @@ public class Image extends CS355Image
 				rgb[1] = c.getGreen();
 				rgb[2] = c.getBlue();
 
-				setPixel(x, y, rgb); // Set the pixel.
+				setPixel(x, y, rgb);
 			}
 		}
 		
-		bi = null; // Reset buffered image so it will redraw
+		bufferedImage = null;
 	}
 
 	@Override
 	public void contrast(int amount) 
 	{
-		float scalar = (float) Math.pow(((amount+100.0f)/100.0f), 4.0f);
+		float scalar = (float) Math.pow(((amount + 100.0f) / 100.0f), 4.0f);
         
 		int[] rgb = new int[3];
 		float[] hsb = new float[3];
 		
-		int height = super.getHeight();
-		int width = super.getWidth();
-		
-		for (int y = 0; y < height; y++) 
+		for (int y = 0; y < super.getHeight(); ++y) 
 		{
-			for (int x = 0; x < width; x++) 
+			for (int x = 0; x < super.getWidth(); ++x) 
 			{
+				
 				rgb = super.getPixel(x, y, rgb);
 				
 				hsb = Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], hsb);
 				
-				hsb[2] = scalar*(hsb[2]-0.5f)+0.5f; //contrast the brightness or somethin
+				hsb[2] = scalar*(hsb[2]-0.5f)+0.5f; //adjust brightness
 				
-				hsb[2] = Math.max(Math.min(hsb[2], 1.0f),-1.0f); //keep in range
+				hsb[2] = Math.max(Math.min(hsb[2], 1.0f), 0.0f); //keep in range
 				
 				Color c = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+				
 				rgb[0] = c.getRed();
 				rgb[1] = c.getGreen();
 				rgb[2] = c.getBlue();
 
-				setPixel(x, y, rgb); // Set the pixel.
+				setPixel(x, y, rgb);
 			}
 		}
 		
-		bi = null; // Reset buffered image so it will redraw
-		
+		bufferedImage = null;
 	}
 
 	@Override
 	public void brightness(int amount) 
 	{
-		float adjustedAmount = amount / 100.0f;
-
+		float adjustedAmount = amount/100.0f;
+        
 		int[] rgb = new int[3];
 		float[] hsb = new float[3];
-
-		int height = super.getHeight();
-		int width = super.getWidth();
 		
-		for (int y = 0; y < height; y++) 
+		for (int y = 0; y < super.getHeight(); ++y) 
 		{
-			for (int x = 0; x < width; x++) 
+			for (int x = 0; x < super.getWidth(); ++x) 
 			{
+				
 				rgb = super.getPixel(x, y, rgb);
-
+				
 				hsb = Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], hsb);
-
-				hsb[2] += adjustedAmount; // adjust brightness
-
-				hsb[2] = Math.max(Math.min(hsb[2], 1.0f), -1.0f); // keep in range
-
+				
+				hsb[2] += adjustedAmount; //adjust brightness
+				
+				hsb[2] = Math.max(Math.min(hsb[2], 1.0f), 0.0f); //keep in range
+				
 				Color c = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
-
+				
 				rgb[0] = c.getRed();
 				rgb[1] = c.getGreen();
 				rgb[2] = c.getBlue();
 
-				setPixel(x, y, rgb); // Set the pixel
+				setPixel(x, y, rgb);
 			}
 		}
-
-		bi = null; // reset buffered image so it will redraw
-
+		
+		bufferedImage = null;
 	}
 	
 	
