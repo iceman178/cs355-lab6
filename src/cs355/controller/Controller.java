@@ -618,7 +618,6 @@ public class Controller implements CS355Controller
 	public void toggleBackgroundDisplay()
 	{
 		displayImage = !displayImage;
-//		System.out.println("DisplayImage=" + displayImage);
 		this.zoomOutCompletely();
 		GUIFunctions.refresh();
 	}

@@ -106,7 +106,7 @@ public class Image extends CS355Image
 				double xTotal = 0;
 				double yTotal = 0;
 				
-				for(int i=0;i<9;i++)
+				for(int i = 0; i < 9; i++)
 				{
 					rgb = super.getPixel(xPos[i], yPos[i], rgb);
 					hsb = Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], hsb);
@@ -118,7 +118,7 @@ public class Image extends CS355Image
 				xTotal /= 8;
 				yTotal /= 8;
 				
-				double magnitude = Math.sqrt(xTotal*xTotal + yTotal*yTotal);
+				double magnitude = Math.sqrt(xTotal * xTotal + yTotal * yTotal);
 				int colorValue = Math.min((int) ( magnitude * 255) + 128, 255);
 				
 				updatedPixels[width * y + x][0] = colorValue;
